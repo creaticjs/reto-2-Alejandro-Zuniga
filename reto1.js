@@ -4,12 +4,10 @@ function calcularEjercicio1() {
     var n3 = document.getElementById("txt3R1").value;
     var n4 = document.getElementById("txt4R1").value;
     var resultado = document.getElementById("resultadoR1");
-    if (n1 === "" || n2 === "" || n3 === "" || n4 === "") {
-        alert("Todos la notas son obligatorias");
-    } else {
+    if (validarValoresVacios([n1,n2,n3,n4])) {
         var valores = calularMediaYNota(n1, n2, n3, n4);
         resultado.innerHTML = valores.nota + " (" + valores.resultado + ")";
-    }
+    } 
 }
 
 function calularMediaYNota(n1, n2, n3, n4) {
@@ -29,6 +27,7 @@ function calularMediaYNota(n1, n2, n3, n4) {
     else nota = "Notas inválidas";
 
     return { nota: nota, resultado: resultado };
+
 }
 
 function validarValoresVacios(array) {
@@ -150,30 +149,11 @@ function reemplazarMesPorNumero(fecha) {
 
 function calcularDigitos() {
     var numeroDigitos = document.getElementById("txtNumeroEnLetras").value;
-    var resultado = document.getElementById("resultado");
     if (validarValoresVacios([numeroDigitos])) {
-        resultado.innerHTML = parsearLetraANumeros(numeroDigitos);
+        convertir(numeroDigitos);
     }
 }
 
-function parsearLetraANumeros(numero) {
-    numero = numero.split(" ").join("");
-    var numerosIniciales = [{ letra: "uno", valor: 1 }, { letra: "dos", valor: 2 }, { letra: "tres", valor: 3 }, , { letra: "cuatro", valor: 4 }, { letra: "cinco", valor: 5 }, { letra: "seis", valor: 6 }, { letra: "siete", valor: 7 }, { letra: "ocho", valor: 8 }, { letra: "nueve", valor: 9 }];
-
-    var numerosDosCifra = [{ letra: "diez", valor: 10 }, { letra: "once", valor: 11 }, { letra: "doce", valor: 12 }, { letra: "trece", valor: 13 }, { letra: "catorce", valor: 14 }, { letra: "quince", valor: 15 },
-    { letra: "dieci", valor: 1 }, { letra: "veinte", valor: 20 }, { letra: "veinti", valor: 2 }, { letra: "treintay", valor: 3 }, { letra: "treinta", valor: 30 }, { letra: "cuarentay", valor: 4 }, { letra: "cuarenta", valor: 40 }, { letra: "cincuentay", valor: 5 }, { letra: "cincuenta", valor: 50 }, { letra: "sesentay", valor: 6 },
-    { letra: "sesenta", valor: 60 }, { letra: "setentay", valor: 7 }, { letra: "setenta", valor: 70 },
-    { letra: "ochentay", valor: 8 }, { letra: "ochenta", valor: 80 }, { letra: "noventay", valor: 9 },
-    { letra: "noventa", valor: 90 }];
-
-    var res = reemplazarLetraANumero(numerosDosCifra, numero);
-    debugger;
-    res = reemplazarNumeroTresCifras(numerosIniciales, res);
-    res = reemplazarLetraANumero(numerosIniciales, res);
-
-    //  res = reeamplazarNumeroTresCifras(res);
-    return res;
-}
 //Terminar de hacer
 function reemplazarNumeroTresCifras(numero, numeroLetras) {
     var tresCifrasSinDecenas = [{ letra: "ciento", valor: 10, valor2: 100, }, { letra: "doscientos", valor: 20, valor2: 200 }, { letra: "trescientos", valor: 30, valor2: 300 }, { letra: "cuatrocientos", valor: 40, valor2: 400 }, { letra: "quinientos", valor: 50, valor2: 500 }, { letra: "seiscientos", valor: 60, valor2: 600 }, { letra: "ochocientos", valor: 80, valor2: 800 }, { letra: "novecientos", valor: 90, valor2: 900 }];
@@ -215,7 +195,7 @@ function calcularNumeroRomano() {
     }
 }
 
-function pasarRomano(num) {
+function pasarRomano(num){
     if (!+num)
         return false;
     var digits = String(+num).split(""),
@@ -227,6 +207,51 @@ function pasarRomano(num) {
     while (i--)
         roman = (key[+digits.pop() + (i * 10)] || "") + roman;
     return Array(+digits.join("") + 1).join("M") + roman;
+}
+
+/*function pasarRomano(num) {
+    var romanos = [
+        {signo:'M', valor:1000},
+        {signo:'D', valor:500},
+        {signo:'C', valor:100},
+        {signo:'L', valor:50},
+        {signo:'X', valor:10},
+        {signo:'V', valor:5}, 
+        {signo:'I', valor:1}
+    ];
+
+    var resultado = '';
+    var tmp = 0;
+    var i;
+    for(i=0; i < romanos.length; i++){//20
+        tmp = Math.trunc(num / romanos[i].valor); //2
+        if(tmp<=3 && tmp !== 0){
+            resultado = resultado+obtenerRomanoPorValor(romanos[i].signo, tmp);
+            num = num % romanos[i].valor;
+        }else if(tmp===4){
+            resultado = resultado.substr(0,resultado.length-1)+restarRomano(romanos, i);
+            num = num % romanos[i].valor;
+        }
+        if(num === 0) break;
+    }
+    return resultado;
+}*/
+
+function restarRomano(romanos, posicion ){
+    //1. Cuando es mayor de 40 -> posicion -1
+    //2. 
+    console.log(posicion);
+    
+    return romanos[posicion].signo+romanos[posicion-2].signo;
+}
+
+function obtenerRomanoPorValor(signo,veces){
+    var i;
+    var respuesta = '';
+    for(i=0; i<veces;i++){
+        respuesta = respuesta+signo;
+    }
+    return respuesta;
 }
 
 function calcularProximidad() {
@@ -394,7 +419,6 @@ function restarDinero(dinero, resto, billetes, monedas) {
     }
     return dinero % resto;
 }
-
 function calcularSalario(){
     var horas = document.getElementById("txtHoras").value;
     var tasa = document.getElementById("txtTasa").value;
@@ -411,4 +435,202 @@ function calcularSalario(){
         }
         resultado.innerHTML = res;
     }
+}
+
+
+function convertir(numero) {
+    var numero2 = numero;
+    numero2 = numero2.substring(0, numero2.length - 1);
+    var res = numero2.split(' ');
+    if (res.length === 1) {
+        
+        var cien = cientos(numero2);
+        if (cien !== 0) {
+            document.getElementById('resultado').innerHTML = "el numero es:" + cien;
+        } else {
+            alert("Formato inválido")
+        }
+    } else if (res.length === 4) {
+        var cen = cientos(res[0]);
+        cen = cen / 100;
+        cent(cen, res);
+    } else {
+        var cen = cientos(res[0]);
+        cen = cen / 100;
+        var decen = decenas(res[1]);
+        if (decen !== 0) {
+            document.getElementById('resultado').innerHTML = '<p>El número es: ' + cen + decen + ' </p>';
+        } else {
+            var decen2 = unidades(res[1]);
+            if (decen2 !== 0) {
+                document.getElementById('resultado').innerHTML = '<p>El número es: ' + cen + 0 + decen2 + ' </p>';
+            } else {
+                var decen3 = valoresDiez(res[1]);
+                if (decen3 !== 0) {
+                    document.getElementById('resultado').innerHTML = '<p>El número es: ' + cen + decen3 + ' </p>';
+                } else {
+                    var decen4 = valoresVeinte(res[1]);
+                    if (decen4 !== 0) {
+                        document.getElementById('resultado').innerHTML = '<p>El número es: ' + cen + decen4 + ' </p>';
+                    } else {
+                        alert("Formato inválido")
+                    }
+                }
+            }
+        }
+    }
+}
+
+function cent(cien, rest) {
+
+    var diez = decenas(rest[1]);
+    diez = diez / 10;
+    var numero = unidades(rest[3]);
+    if (diez !== 0 && numero !== 0) {
+        document.getElementById('resuktado').innerHTML = '<p>El número es: ' + cien + diez + numero + ' </p>';
+    } else {
+        alert("Formato inválido")
+    }
+}
+
+function cientos(numeror) {
+    var numero = 0;
+    var num = numeror.toLowerCase();
+    switch (num) {
+        case 'cien': numero = 100;
+            break;
+        case 'ciento': numero = 100;
+            break;
+        case 'doscientos': numero = 200;
+            break;
+        case 'trescientos': numero = 300;
+            break;
+        case 'cuatrocientos': numero = 400;
+            break;
+        case 'quinientos': numero = 500;
+            break;
+        case 'seiscientos': numero = 600;
+            break;
+        case 'setecientos': numero = 700;
+            break;
+        case 'ochocientos': numero = 800;
+            break;
+        case 'novecientos': numero = 900;
+            break;
+        default: numero = 0;
+            break
+    }
+    return numero;
+}
+
+function decenas(numeror) {
+    var numero = 0;
+    var num = numeror.toLowerCase();
+    switch (num) {
+        case 'diez': numero = 10;
+            break;
+        case 'veinte': numero = 20;
+            break;
+        case 'treinta': numero = 30;
+            break;
+        case 'cuarenta': numero = 40;
+            break;
+        case 'cincuenta': numero = 50;
+            break;
+        case 'sesenta': numero = 60;
+            break;
+        case 'setenta': numero = 70;
+            break;
+        case 'ochenta': numero = 80;
+            break;
+        case 'noventa': numero = 90;
+            break;
+        default: numero = 0;
+            break
+    }
+    return numero;
+}
+
+function unidades(numeror) {
+    var numero = 0;
+    var num = numeror.toLowerCase();
+    switch (num) {
+        case 'uno': numero = 1;
+            break;
+        case 'dos': numero = 2;
+            break;
+        case 'tres': numero = 3;
+            break;
+        case 'cuatro': numero = 4;
+            break;
+        case 'cinco': numero = 5;
+            break;
+        case 'seis': numero = 6;
+            break;
+        case 'siete': numero = 7;
+            break;
+        case 'ocho': numero = 8;
+            break;
+        case 'nueve': numero = 9;
+            break;
+        default: numero = 0;
+            break
+    }
+    return numero;
+}
+
+function valoresDiez(numeror) {
+    var numero = 0;
+    var num = numeror.toLowerCase();
+    switch (num) {
+        case 'once': numero = 11;
+            break;
+        case 'doce': numero = 12;
+            break;
+        case 'trece': numero = 13;
+            break;
+        case 'catorce': numero = 14;
+            break;
+        case 'quince': numero = 15;
+            break;
+        case 'dieciseis': numero = 16;
+            break;
+        case 'diecisiete': numero = 17;
+            break;
+        case 'dieciocho': numero = 18;
+            break;
+        case 'diecinueve': numero = 19;
+            break;
+        default: numero = 0;
+            break
+    }
+    return numero;
+}
+
+function valoresVeinte(numeror) {
+    var numero = 0;
+    var num = numeror.toLowerCase();
+    switch (num) {
+        case 'veintiuno': numero = 21;
+            break;
+        case 'veintidos': numero = 22;
+            break;
+        case 'veintitres': numero = 23;
+            break;
+        case 'veinticuatro': numero = 24;
+            break;
+        case 'veinticinco': numero = 25;
+            break;
+        case 'veintiseis': numero = 26;
+            break;
+        case 'veintisiete': numero = 27;
+            break;
+        case 'veintiocho': numero = 28;
+            break;
+        case 'veintinueve': numero = 29;
+            break;
+        default: numero = 0;
+            break
+    }
+    return numero;
 }
